@@ -5,7 +5,7 @@ A collection of projects exploring **finance, economics, business, and data anal
 
 ## Projects
 
-* **[Project Name](PROJECT-LINK)** — Brief description of the project, methodology, and main objective.
+* **[Economic Complexity Prediction](./eci_global_forecasting)** — This project aims to forecast countries’ Economic Complexity Index (ECI) through 2050 while exploring and visualizing key patterns, trends, and insights in global ECI data.
 
 > More projects will be added as the portfolio develops.
 <br>
