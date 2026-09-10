@@ -20,18 +20,16 @@ The project is designed around three main questions:
 
 <br>
 
-
 ## Data
 
 ### Source
 
-Historical ECI data are obtained from the Harvard Growth Lab's Atlas of Economic Complexity using the HS92-based ECI series.
+Historical ECI data are obtained from the **Harvard Growth Lab's Atlas of Economic Complexity**, using the HS92-based ECI series.
 
-Historical observations cover: 1995–2023
+- Historical observations: **1995–2023**
+- Forecasting period: **2024–2050**
 
-The forecasting period is: 2024–2050
-
-The final processed dataset combines the historical observations with model-generated forecasts and annual country rankings.
+The final processed dataset combines historical observations with model-generated forecasts and annual country rankings.
 
 ### Panel Structure
 
@@ -39,37 +37,41 @@ The dataset is organized as a country-year panel, with countries identified usin
 
 The main outcome variable is:
 
-* `eci` — Economic Complexity Index
+- `eci` — Economic Complexity Index
 
 Additional variables are constructed from the historical ECI series to represent temporal dependence, momentum, and recent variability.
 
-<br>
-
-
+ <br>
 
 ## Machine Learning Model
 
 ### CatBoost Regressor
 
-The primary forecasting model is a **CatBoost Regressor**, a gradient-boosted decision-tree algorithm capable of incorporating categorical variables. The country identifier (`iso3`) is treated as a categorical feature rather than being expanded into a large one-hot encoded matrix. This is particularly useful for panel data containing a large number of country entities while preserving country-specific information within the model. In this section, modern LLM tools (ChatGPT & Gemini) widely used for debugging and developing the model. 
+The primary forecasting model is a **CatBoost Regressor**, a gradient-boosted decision-tree algorithm capable of incorporating categorical variables.
+
+The country identifier (`iso3`) is treated as a categorical feature rather than being expanded into a large one-hot encoded matrix. This allows the model to incorporate country-specific information while maintaining the panel structure of the dataset.
+
+The main implementation is available in [`prediction_pro_rank.py`](./prediction_pro_rank.py).
+
+During the development of the project, modern LLM-based tools, including **ChatGPT and Gemini**, were used as development aids for debugging, code refinement, and implementation support.
 
 ### Model Configuration
 
 The current implementation uses the following main hyperparameters:
 
-| Parameter         | Value |
-| ----------------- | ----: |
-| Loss function     |  RMSE |
-| Iterations        | 2,000 |
-| Learning rate     |  0.03 |
-| Tree depth        |     8 |
-| L2 regularization |     3 |
+| Parameter | Value |
+| <br>| <br>:|
+| Loss function | RMSE |
+| Iterations | 2,000 |
+| Learning rate | 0.03 |
+| Tree depth | 8 |
+| L2 regularization | 3 |
 
-These parameters define the current model specification implemented in the repository.
+These parameters define the model specification implemented in the repository.
 
----
+ <br>
 
-## 5. Forecasting Framework
+## Forecasting Framework
 
 The model produces forecasts from **2024 through 2050** using recursive multi-step forecasting.
 
@@ -106,31 +108,44 @@ Historical ECI
                        │
                        ▼
                      2050
-```
+````
 
-The recursive structure is important because the forecasting horizon extends substantially beyond the final observed year.
+The recursive structure is particularly relevant for this project because the forecasting horizon extends substantially beyond the final observed year.
 
----
+The final country-level predictions, historical observations, and associated rankings are provided in the Excel output:
+
+**[Download: eci_full_1995_2050.xlsx](./eci_full_1995_2050.xlsx)**
+
+The complete-period visualization generated from the forecasting results is available here:
+
+**[Full-period interactive plot](./full_period_plot.html)**
+
+ <br>
 
 ## Model Evaluation
 
-The implemented pipeline evaluates the CatBoost model using a separate test set.
+The implemented pipeline uses **strict temporal out-of-sample validation** to reduce the risk of data leakage.
+
+The model is trained using historical observations from **1995 to 2018** and evaluated on unseen future observations from **2019 to 2023**.
+
+This temporal structure ensures that observations from future periods are not used to train the model before those periods are evaluated.
 
 The current execution produced the following results:
 
-Metric	Result
-Training observations	3,454
-Test observations	725
-Total observations	4,179
-Test \(R^2\)	0.9995
+| Metric                |     Result |
+|  <br> <br> <br> <br> <br> <br> <br> |  <br> <br> <br>: |
+| Training observations |      3,454 |
+| Test observations     |        725 |
+| Total observations    |      4,179 |
+| Test $R^2$            | **0.9995** |
 
-The reported \(R^2\) indicates that the model explains approximately 99.95% of the variance in the held-out test observations under the current evaluation procedure.
+The reported $R^2$ indicates that the model explains approximately **99.95% of the variance** in the held-out test observations under the current evaluation procedure.
 
-Important: The reported \(R^2\) should not be interpreted as 99.95% forecasting accuracy. Model performance is dependent on the train/test splitting strategy and the temporal structure of the panel data.
+> **Note:** $R^2 = 0.9995$ should not be interpreted as 99.95% forecasting accuracy. It represents the proportion of variance in the test target explained by the model under the specified evaluation procedure.
 
-For a forecasting application, temporal out-of-sample validation is particularly important because randomly splitting country-year observations can allow information from later periods to enter the training set while earlier periods are evaluated in the test set. Future versions of the project should therefore include strict time-based validation to provide a more rigorous assessment of long-horizon forecasting performance.
+Because the validation is performed on later years than the training period, the evaluation is designed to better reflect the forecasting setting than a random country-year split.
 
----
+ <br>
 
 ## Historical Analysis and Visualization
 
@@ -138,36 +153,36 @@ The repository includes interactive visualizations designed to examine both the 
 
 ### Global ECI Maps
 
-Interactive choropleth dashboards are provided for:
+Interactive choropleth dashboards are provided for each year from 2020 to 2023:
 
-* 2020
-* 2021
-* 2022
-* 2023
+* **[2020 — All Countries](./all_2020.html)**
+* **[2021 — All Countries](./all_2021.html)**
+* **[2022 — All Countries](./all_2022.html)**
+* **[2023 — All Countries](./all_2023.html)**
 
-These maps display country-level ECI values and provide a geographic view of the global distribution of economic complexity.
+These dashboards display country-level ECI values and provide a geographic view of the global distribution of economic complexity.
 
-The dashboards also include comparisons of the highest- and lowest-ranked economies.
-
-![Global Dashboard 2023](image_33db6b.png)
+The dashboards also include comparisons of the **Top 20** and **Bottom 20** countries according to their HS92-based ECI rankings.
 
 ### Historical ECI Trajectories
 
-The repository also includes an interactive visualization comparing the trajectories of selected high- and low-complexity economies over 1995–2023.
+The repository also includes an interactive visualization comparing the trajectories of selected high- and low-complexity economies over **1995–2023**.
 
-The timeline allows users to examine how the relative positions of countries changed over time.
+The timeline slider allows users to examine how the relative positions of the selected countries change over time.
 
-![Interactive Top/Bottom 7](image_33dc28.png)
+**[Full-period interactive visualization](./full_period_plot.html)**
 
+The script used to generate individual-year visualizations is available in:
 
----
+**[`single_year_plot_maker.py`](./single_year_plot_maker.py)**
 
+ <br>
 
 ## Interpretation of Forecasts
 
 The 2024–2050 values generated by this repository should be interpreted as **model-based projections rather than official forecasts of future economic complexity**.
 
-Long-term ECI trajectories can be affected by factors that are difficult to infer from historical ECI alone, including:
+Long-term ECI trajectories can be affected by factors that are difficult to infer from historical ECI dynamics alone, including:
 
 * structural changes in international trade;
 * technological development;
@@ -178,15 +193,13 @@ Long-term ECI trajectories can be affected by factors that are difficult to infe
 * institutional changes;
 * major economic crises.
 
-The recursive forecasting design also means that prediction uncertainty can accumulate over longer horizons because forecasts become inputs for subsequent predictions.
+The recursive forecasting design also means that prediction uncertainty can accumulate over longer horizons because forecasts become inputs for subsequent predictions. Consequently, the 2050 projections should be interpreted as **model-based projections conditional on historical patterns**, rather than deterministic predictions of future economic outcomes.
 
-Consequently, the 2050 projections should be interpreted primarily as **scenario-like model outputs conditional on historical patterns**, rather than deterministic predictions of future economic outcomes.
+ <br>
 
----
+## Limitations and Future Research
 
-## 11. Limitations and Future Research
-
-Several extensions could improve the empirical framework.
+Several extensions could further strengthen the empirical framework.
 
 ### Additional Economic Predictors
 
@@ -194,9 +207,7 @@ The current framework is primarily based on historical ECI dynamics. Future vers
 
 * GDP per capita;
 * trade openness;
-* export diversification;
-* R&D expenditure;
-* human capital and etc.
+* export diversification, and etc.
 
 ### Alternative Forecasting Models
 
@@ -204,44 +215,63 @@ Model performance could also be compared with alternative approaches, including:
 
 * XGBoost;
 * Random Forest;
-* panel regression models, and etc.
+* LightGBM, and etc.
 
-
-### Out-of-Sample Evaluation
-
-A particularly important extension is systematic temporal validation, in which earlier years are used for training and later observed years are reserved for testing.
-
-
-
-```text
-Training:   1995–2018
-Test:       2019–2023
-```
-
-Such evaluation would provide a more rigorous assessment of the model's ability to generalize to unseen future periods.
+Such comparisons would help determine whether the observed predictive performance is specific to the CatBoost architecture or remains robust across alternative modeling approaches.
 
 ### Uncertainty Quantification
 
-Future versions could additionally report prediction intervals or alternative forecast scenarios rather than presenting point forecasts alone.
+Future versions could additionally report prediction intervals or alternative forecast scenarios rather than presenting point forecasts alone. This would be particularly valuable for the long-term 2024–2050 forecasting horizon.
+
+ <br>
+
+## Repo Structure
+
+```text
+eci-global-forecasting/
+│
+├── all_2020.html
+├── all_2021.html
+├── all_2022.html
+├── all_2023.html
+│
+├── eci_full_1995_2050.xlsx
+├── full_period_plot.html
+│
+├── prediction_pro_rank.py
+├── single_year_plot_maker.py
+└── readme.md
+```
+
+### Main Files
+
+* **[`prediction_pro_rank.py`](./prediction_pro_rank.py)** — Main forecasting pipeline using CatBoost, including country identification and annual ranking.
+* **[`single_year_plot_maker.py`](./single_year_plot_maker.py)** — Script used to generate individual-year ECI visualizations.
+* **[`eci_full_1995_2050.xlsx`](./eci_full_1995_2050.xlsx)** — Final dataset containing historical observations, model-generated forecasts, and rankings.
+* **[`full_period_plot.html`](./full_period_plot.html)** — Interactive visualization covering the full historical period.
+* **[`all_2020.html`](./all_2020.html)** — Interactive ECI visualization for 2020.
+* **[`all_2021.html`](./all_2021.html)** — Interactive ECI visualization for 2021.
+* **[`all_2022.html`](./all_2022.html)** — Interactive ECI visualization for 2022.
+* **[`all_2023.html`](./all_2023.html)** — Interactive ECI visualization for 2023.
+* **[`readme.md`](./readme.md)** — Project documentation.
+
+ <br>
 
 
-
----
-
-## 13. Citation and Data Source
+## Data Source
 
 Historical ECI data are obtained from the **Harvard Growth Lab's Atlas of Economic Complexity**.
 
 Users of this repository should cite the underlying Atlas of Economic Complexity and the relevant methodological publications associated with the ECI measure when using the dataset or derived results in academic work.
 
-Data source:
-
+**Data source:**
 [Harvard Growth Lab — Atlas of Economic Complexity](https://atlas.hks.harvard.edu/)
 
----
+ <br>
 
-## 14. License
+##  License
 
 This project is released under the **MIT License**.
 
 See the `LICENSE` file for the complete license text.
+
