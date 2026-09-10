@@ -41,7 +41,7 @@ The main outcome variable is:
 
 Additional variables are constructed from the historical ECI series to represent temporal dependence, momentum, and recent variability.
 
- <br>
+ <br> <br>
 
 ## Machine Learning Model
 
@@ -59,17 +59,18 @@ During the development of the project, modern LLM-based tools, including **ChatG
 
 The current implementation uses the following main hyperparameters:
 
-| Parameter | Value |
-| <br>| <br>:|
-| Loss function | RMSE |
-| Iterations | 2,000 |
-| Learning rate | 0.03 |
-| Tree depth | 8 |
-| L2 regularization | 3 |
+| Parameter         | Value |
+| ----------------- | ----- |
+| Loss function     | RMSE  |
+| Iterations        | 2,000 |
+| Learning rate     | 0.03  |
+| Tree depth        | 8     |
+| L2 regularization | 3     |
+
 
 These parameters define the model specification implemented in the repository.
 
- <br>
+ <br> <br>
 
 ## Forecasting Framework
 
@@ -120,7 +121,7 @@ The complete-period visualization generated from the forecasting results is avai
 
 **[Full-period interactive plot](./full_period_plot.html)**
 
- <br>
+ <br> <br>
 
 ## Model Evaluation
 
@@ -133,11 +134,12 @@ This temporal structure ensures that observations from future periods are not us
 The current execution produced the following results:
 
 | Metric                |     Result |
-|  <br> <br> <br> <br> <br> <br> <br> |  <br> <br> <br>: |
+| --------------------- | ---------: |
 | Training observations |      3,454 |
 | Test observations     |        725 |
 | Total observations    |      4,179 |
 | Test $R^2$            | **0.9995** |
+
 
 The reported $R^2$ indicates that the model explains approximately **99.95% of the variance** in the held-out test observations under the current evaluation procedure.
 
@@ -145,7 +147,7 @@ The reported $R^2$ indicates that the model explains approximately **99.95% of t
 
 Because the validation is performed on later years than the training period, the evaluation is designed to better reflect the forecasting setting than a random country-year split.
 
- <br>
+ <br> <br>
 
 ## Historical Analysis and Visualization
 
@@ -176,7 +178,7 @@ The script used to generate individual-year visualizations is available in:
 
 **[`single_year_plot_maker.py`](./single_year_plot_maker.py)**
 
- <br>
+ <br> <br>
 
 ## Interpretation of Forecasts
 
@@ -195,7 +197,7 @@ Long-term ECI trajectories can be affected by factors that are difficult to infe
 
 The recursive forecasting design also means that prediction uncertainty can accumulate over longer horizons because forecasts become inputs for subsequent predictions. Consequently, the 2050 projections should be interpreted as **model-based projections conditional on historical patterns**, rather than deterministic predictions of future economic outcomes.
 
- <br>
+ <br> <br>
 
 ## Limitations and Future Research
 
@@ -223,7 +225,7 @@ Such comparisons would help determine whether the observed predictive performanc
 
 Future versions could additionally report prediction intervals or alternative forecast scenarios rather than presenting point forecasts alone. This would be particularly valuable for the long-term 2024–2050 forecasting horizon.
 
- <br>
+ <br> <br>
 
 ## Repo Structure
 
@@ -255,7 +257,7 @@ eci-global-forecasting/
 * **[`all_2023.html`](./all_2023.html)** — Interactive ECI visualization for 2023.
 * **[`readme.md`](./readme.md)** — Project documentation.
 
- <br>
+ <br> <br>
 
 
 ## Data Source
@@ -267,7 +269,7 @@ Users of this repository should cite the underlying Atlas of Economic Complexity
 **Data source:**
 [Harvard Growth Lab — Atlas of Economic Complexity](https://atlas.hks.harvard.edu/)
 
- <br>
+ <br> <br>
 
 ##  License
 
