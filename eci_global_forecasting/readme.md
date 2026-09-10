@@ -242,6 +242,8 @@ eci-global-forecasting/
 │
 ├── prediction_pro_rank.py
 ├── single_year_plot_maker.py
+├── 
+├── LICENSE
 └── readme.md
 ```
 
@@ -275,7 +277,7 @@ Users of this repository should cite the underlying Atlas of Economic Complexity
 
 This project is released under the **MIT License**.
 
-See the `LICENSE` file for the complete license text.
+See the [LICENSE file](./LICENSE) for the complete license text.
 
 
  <br> <br>
